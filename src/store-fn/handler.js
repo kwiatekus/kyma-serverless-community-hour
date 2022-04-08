@@ -19,7 +19,7 @@ module.exports = {
       Body: body,
     };
     try {
-      console.log(`Storing ... `,params )
+      console.log(`Storing to S3... `,params )
       return await s3.upload(params).promise();
     } catch (e) {
       console.log(e);
