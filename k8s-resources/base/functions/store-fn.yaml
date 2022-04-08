@@ -1,0 +1,94 @@
+apiVersion: serverless.kyma-project.io/v1alpha1
+kind: Function
+metadata:
+  creationTimestamp: null
+  name: store-fn
+  namespace: default
+spec:
+  deps: |
+    {
+      "name": "store-fn",
+      "version": "0.0.1",
+      "dependencies": {
+        "aws-sdk": "^2.553.0"
+      }
+    }
+  env:
+  - name: S3_BUCKET
+    valueFrom:
+      secretKeyRef:
+        key: S3_BUCKET
+        name: s3-storage
+  - name: S3_ENDPOINT
+    valueFrom:
+      secretKeyRef:
+        key: S3_ENDPOINT
+        name: s3-storage
+  - name: S3_ACCESSKEY_ID
+    valueFrom:
+      secretKeyRef:
+        key: S3_ACCESSKEY_ID
+        name: s3-storage
+  - name: S3_SECRET
+    valueFrom:
+      secretKeyRef:
+        key: S3_SECRET
+        name: s3-storage
+  runtime: nodejs14
+  source: |
+    "use strict";
+
+    const AWS = require("aws-sdk");
+
+    module.exports = {
+      main: async function (event, context) {
+
+        let s3 = new AWS.S3({
+          endpoint: readEnv("S3_ENDPOINT"),
+          accessKeyId: readEnv("S3_ACCESSKEY_ID"),
+          secretAccessKey: readEnv("S3_SECRET"),
+        });
+
+        let body = event.data;
+
+        let params = {
+          Bucket: readEnv("S3_BUCKET"),
+          Key: Date.now().toString(),
+          Body: body,
+        };
+        try {
+          console.log(`Storing ... `,params )
+          return await s3.upload(params).promise();
+        } catch (e) {
+          console.log(e);
+          return e;
+        }
+      },
+    };
+
+    function readEnv(env = "") {
+      return process.env[env] || undefined;
+    }
+
+---
+apiVersion: eventing.kyma-project.io/v1alpha1
+kind: Subscription
+metadata:
+  creationTimestamp: null
+  name: store-fn
+  namespace: default
+spec:
+  filter:
+    filters:
+    - eventSource:
+        property: source
+        type: exact
+        value: ""
+      eventType:
+        property: type
+        type: exact
+        value: sap.kyma.custom.acme.payload.sanitised.v1
+  protocol: ""
+  protocolsettings: {}
+  sink: http://store-fn.default.svc.cluster.local
+

@@ -162,3 +162,43 @@ git checkout store-function-final
 
 kyma apply function
 ```
+# Consistent Deployment
+
+### Use Kyma CLI to render k8s manifests for functions
+
+```bash
+kyma apply function --dry-run -o yaml
+```
+### Make Function Yamls part of your k8s-resources
+
+For each sub-folder in `src` render a yaml file
+```bash
+#!/bin/sh
+set -e
+echo "resources:" > ../k8s-resources/base/functions/kustomization.yaml
+
+for d in */ ; do
+    [ -L "${d}" ] && continue
+    echo "Generating k8s manifests for function ${d%/}"
+    ( cd "$d" && kyma apply function --dry-run --ci -o yaml | tail -n +3 > ../../k8s-resources/base/functions/${d%/}.yaml )
+    echo "- ${d%/}.yaml" >> ../k8s-resources/base/functions/kustomization.yaml
+done
+```
+### Makefile
+
+```
+render:
+	(cd ./src ; sh render-function-manifests.sh)
+apply:
+	(cd ./src ; sh render-function-manifests.sh)
+	kubectl apply -k ./k8s-resources/base
+
+```
+
+TAG: (`git checkout consistent-k8s-deployment`) 
+
+PUSH Based Deployment via `make apply`
+ - manually  
+ - via CI/CD
+
+PULL Based Deployment of `k8s-resources` folder via in-cluster GitOperator (i.e `fluxcd` or `argocd`)
