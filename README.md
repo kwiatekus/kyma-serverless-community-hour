@@ -1,0 +1,1 @@
+# kyma-serverless-community-hour
