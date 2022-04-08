@@ -1,15 +1,3 @@
-# kyma-serverless-community-hour
-
-# Use case
-
-![usecase](usecase.png)
-# Explore 
-
-Explore at [kyma-dashboard](https://console.c-31cabdf.kyma.ondemand.com/)
-
-### Draft the code
-
-```js
 const { v4: uuidv4 } = require('uuid');
 const string = require("string-sanitizer");
 module.exports = {
@@ -53,40 +41,3 @@ let buildEventPayload = (data, event)=>{
     eventPayload.specversion=eventSpecVersion;
     return eventPayload;
 }
-```
-
-```json
-{
-  "name": "sanitize-fn",
-  "version": "0.0.1",
-  "dependencies": {
-    "uuidv4": "6.2.12",
-    "string-sanitizer": "2.0.2"
-  }
-}
-```
-
-### Test
-```bash
-export url=data-in.c-31cabdf.kyma.ondemand.com
-curl  -H "Content-Type: application/json"   -X POST -d '{"FirstName":"J@#$%ohn!", "LastName":"Do@@*&e"}' "https://$url/"
-```
-
-# Use Kyma CLI
-
-### Fetch what you got already
-
-```bash
-mkdir src
-cd src
-mkdir sanitize-fn
-cd sanitize-fn
-kyma sync function sanitize-fn
-```
-
-### Delete and re-create
-
-```bash
-k delete functions --all
-kyma apply function
-```

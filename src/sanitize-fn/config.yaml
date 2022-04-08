@@ -1,0 +1,22 @@
+name: sanitize-fn
+namespace: default
+runtime: nodejs14
+source:
+    sourceType: inline
+    sourcePath: /Users/krzysztofkwiatosz/go/src/github.com/kwiatekus/kyma-serverless-community-hour/src/sanitize-fn
+env:
+    - name: eventspecversion
+      value: "1.0"
+    - name: eventsource
+      value: kyma
+    - name: eventtype
+      value: sap.kyma.custom.acme.payload.sanitised.v1
+apiRules:
+    - name: data-in
+      service:
+        host: data-in.c-31cabdf.kyma.ondemand.com
+      rules:
+        - methods:
+            - GET
+          accessStrategies:
+            - handler: allow

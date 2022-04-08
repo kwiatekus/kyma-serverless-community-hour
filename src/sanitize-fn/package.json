@@ -1,0 +1,8 @@
+{ 
+  "name": "sanitize-fn",
+  "version": "1.0.0",
+  "dependencies": {
+        "uuidv4": "6.2.12",
+        "string-sanitizer": "2.0.2"
+  }
+}
