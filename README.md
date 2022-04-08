@@ -74,7 +74,7 @@ curl  -H "Content-Type: application/json"   -X POST -d '{"FirstName":"J@#$%ohn!"
 
 # Use Kyma CLI
 
-### Fetch what you got already
+## Fetch what you got already
 
 ```bash
 mkdir src
@@ -82,6 +82,7 @@ cd src
 mkdir sanitize-fn
 cd sanitize-fn
 kyma sync function sanitize-fn
+code .
 ```
 
 ### Delete and re-create
@@ -89,4 +90,68 @@ kyma sync function sanitize-fn
 ```bash
 k delete functions --all
 kyma apply function
+```
+
+## Init new function
+
+```bash
+cd src
+mkdir store-fn
+cd store-fn
+kyma init function --name store-fn --vscode
+code .
+```
+
+### Run locally with Hot-Deployment/Debug
+
+```bash
+kyma run function --hot-deploy  
+
+curl loclahost:8080
+```
+
+### IDE Autocompletion
+
+Subscription to event
+```yaml
+subscriptions:
+    - name: store-fn
+      protocol: ""
+      filter:
+        filters:
+            - eventSource:
+                property: source
+                type: exact
+                value: ""
+              eventType:
+                property: type
+                type: exact
+                value: sap.kyma.custom.acme.payload.sanitised.v1
+```
+S3 storage ENVs
+
+apply secret first : `kubectl apply -k ./k8s-resources/base`
+
+```yaml
+env:
+  - name: S3_BUCKET
+    valueFrom:
+      secretKeyRef:
+        name: s3-storage
+        key: S3_BUCKET
+  - name: S3_ENDPOINT
+    valueFrom:
+      secretKeyRef:
+        name: s3-storage
+        key: S3_ENDPOINT
+  - name: S3_ACCESSKEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: s3-storage
+        key: S3_ACCESSKEY_ID
+  - name: S3_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: s3-storage
+        key: S3_SECRET
 ```
