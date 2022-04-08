@@ -4,7 +4,7 @@ runtime: nodejs14
 source:
     sourceType: git
     url: https://github.com/kwiatekus/kyma-serverless-community-hour.git
-    repository: kyma-serverless-community-hour1
+    repository: kyma-serverless-community-hour
     reference: main
     baseDir: /src/sanitize-fn/
 env:

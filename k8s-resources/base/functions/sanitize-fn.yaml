@@ -1,8 +1,9 @@
+---
 apiVersion: serverless.kyma-project.io/v1alpha1
 kind: GitRepository
 metadata:
   creationTimestamp: null
-  name: kyma-serverless-community-hour1
+  name: kyma-serverless-community-hour
   namespace: default
 spec:
   url: https://github.com/kwiatekus/kyma-serverless-community-hour.git
@@ -25,7 +26,7 @@ spec:
     value: sap.kyma.custom.acme.payload.sanitised.v1
   reference: main
   runtime: nodejs14
-  source: kyma-serverless-community-hour1
+  source: kyma-serverless-community-hour
   type: git
 
 ---
