@@ -226,6 +226,8 @@ change source type: `inline` to `git`.
     baseDir: /src/store-fn/
 ```
 
+(`git checkout git-sourcing`) 
+
 Render changes in manifests.. See difference
 `make render`
 
