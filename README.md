@@ -158,7 +158,7 @@ env:
 ## Apply final version of store-fn
 
 ```bash
-git checkout store-function-init
+git checkout store-function-final
 
 kyma apply function
 ```
