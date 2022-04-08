@@ -155,3 +155,10 @@ env:
         name: s3-storage
         key: S3_SECRET
 ```
+## Apply final version of store-fn
+
+```bash
+git checkout store-function-init
+
+kyma apply function
+```

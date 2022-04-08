@@ -1,0 +1,39 @@
+name: store-fn
+namespace: default
+runtime: nodejs14
+source:
+    sourceType: inline
+subscriptions:
+    - name: store-fn
+      protocol: ""
+      filter:
+        filters:
+            - eventSource:
+                property: source
+                type: exact
+                value: ""
+              eventType:
+                property: type
+                type: exact
+                value: sap.kyma.custom.acme.payload.sanitised.v1
+env:
+  - name: S3_BUCKET
+    valueFrom:
+      secretKeyRef:
+        name: s3-storage
+        key: S3_BUCKET
+  - name: S3_ENDPOINT
+    valueFrom:
+      secretKeyRef:
+        name: s3-storage
+        key: S3_ENDPOINT
+  - name: S3_ACCESSKEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: s3-storage
+        key: S3_ACCESSKEY_ID
+  - name: S3_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: s3-storage
+        key: S3_SECRET
