@@ -7,7 +7,7 @@
 
 Explore at [kyma-dashboard](https://console.c-31cabdf.kyma.ondemand.com/)
 
-Draft the code
+### Draft the code
 
 ```js
 const { v4: uuidv4 } = require('uuid');
@@ -20,7 +20,9 @@ module.exports = {
         const eventOut = buildEventPayload(sanitisedData, event);
         event.publishCloudEvent(eventOut).then(response => {
             console.log(`Payload pushed`, response.data);
-        });
+        }).catch(err => {
+            console.error("Could not send event",err);
+        })
         return "OK"
     }
 }
@@ -38,14 +40,14 @@ let sanitise = (data)=>{
 
 let buildEventPayload = (data, event)=>{
     
-    const eventSource = "kyma"
-    const eventType = "sap.kyma.custom.acme.payload.sanitised.v1"
-    const eventSpecVersion = "1.0"    
+    // const eventSource = "kyma"
+    // const eventType = "sap.kyma.custom.acme.payload.sanitised.v1"
+    // const eventSpecVersion = "1.0"    
 
     //TODO Read from ENVS!
-    // const eventType = process.env['eventype']
-    // const eventSource = process.env['evensource']
-    // const eventSpecVersion = process.env['eventspecversion']
+    const eventType = process.env['eventtype']
+    const eventSource = process.env['eventsource']
+    const eventSpecVersion = process.env['eventspecversion']
     var eventPayload=event.buildResponseCloudEvent(uuidv4(),eventType,data);
     eventPayload.source=eventSource
     eventPayload.specversion=eventSpecVersion;
@@ -55,7 +57,7 @@ let buildEventPayload = (data, event)=>{
 
 ```json
 {
-  "name": "sanitise-fn",
+  "name": "sanitize-fn",
   "version": "0.0.1",
   "dependencies": {
     "uuidv4": "6.2.12",
@@ -64,8 +66,20 @@ let buildEventPayload = (data, event)=>{
 }
 ```
 
-# Test
+### Test
 ```bash
 export url=data-in.c-31cabdf.kyma.ondemand.com
 curl  -H "Content-Type: application/json"   -X POST -d '{"FirstName":"J@#$%ohn!", "LastName":"Do@@*&e"}' "https://$url/"
+```
+
+# Use Kyma CLI
+
+### Fetch what you got already
+
+```bash
+mkdir src
+cd src
+mkdir sanitize-fn
+cd sanitize-fn
+kyma sync function sanitize-fn
 ```
