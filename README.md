@@ -107,7 +107,7 @@ code .
 ```bash
 kyma run function --hot-deploy  
 
-curl loclahost:8080
+curl localhost:8080
 ```
 
 ### IDE Autocompletion
