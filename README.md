@@ -5,7 +5,7 @@
 ![usecase](usecase.png)
 # Explore 
 
-Explote at [kyma-dashboard](https://dashboard.kyma.cloud.sap/cluster/shoot--kyma--c-31cabdf/namespaces/default/details)
+Explore at [kyma-dashboard](https://console.c-31cabdf.kyma.ondemand.com/)
 
 Draft the code
 
