@@ -2,8 +2,11 @@ name: sanitize-fn
 namespace: default
 runtime: nodejs14
 source:
-    sourceType: inline
-    sourcePath: /Users/krzysztofkwiatosz/go/src/github.com/kwiatekus/kyma-serverless-community-hour/src/sanitize-fn
+    sourceType: git
+    url: https://github.com/kwiatekus/kyma-serverless-community-hour.git
+    repository: kyma-serverless-community-hour1
+    reference: main
+    baseDir: /src/sanitize-fn/
 env:
     - name: eventspecversion
       value: "1.0"

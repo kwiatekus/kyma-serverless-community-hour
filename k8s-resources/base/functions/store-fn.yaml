@@ -1,18 +1,21 @@
 apiVersion: serverless.kyma-project.io/v1alpha1
+kind: GitRepository
+metadata:
+  creationTimestamp: null
+  name: kyma-serverless-community-hour2
+  namespace: default
+spec:
+  url: https://github.com/kwiatekus/kyma-serverless-community-hour.git
+
+---
+apiVersion: serverless.kyma-project.io/v1alpha1
 kind: Function
 metadata:
   creationTimestamp: null
   name: store-fn
   namespace: default
 spec:
-  deps: |
-    {
-      "name": "store-fn",
-      "version": "0.0.1",
-      "dependencies": {
-        "aws-sdk": "^2.553.0"
-      }
-    }
+  baseDir: /src/store-fn/
   env:
   - name: S3_BUCKET
     valueFrom:
@@ -34,41 +37,10 @@ spec:
       secretKeyRef:
         key: S3_SECRET
         name: s3-storage
+  reference: main
   runtime: nodejs14
-  source: |
-    "use strict";
-
-    const AWS = require("aws-sdk");
-
-    module.exports = {
-      main: async function (event, context) {
-
-        let s3 = new AWS.S3({
-          endpoint: readEnv("S3_ENDPOINT"),
-          accessKeyId: readEnv("S3_ACCESSKEY_ID"),
-          secretAccessKey: readEnv("S3_SECRET"),
-        });
-
-        let body = event.data;
-
-        let params = {
-          Bucket: readEnv("S3_BUCKET"),
-          Key: Date.now().toString(),
-          Body: body,
-        };
-        try {
-          console.log(`Storing ... `,params )
-          return await s3.upload(params).promise();
-        } catch (e) {
-          console.log(e);
-          return e;
-        }
-      },
-    };
-
-    function readEnv(env = "") {
-      return process.env[env] || undefined;
-    }
+  source: kyma-serverless-community-hour2
+  type: git
 
 ---
 apiVersion: eventing.kyma-project.io/v1alpha1

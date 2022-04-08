@@ -2,7 +2,11 @@ name: store-fn
 namespace: default
 runtime: nodejs14
 source:
-    sourceType: inline
+    sourceType: git
+    url: https://github.com/kwiatekus/kyma-serverless-community-hour.git
+    repository: kyma-serverless-community-hour2
+    reference: main
+    baseDir: /src/store-fn/
 subscriptions:
     - name: store-fn
       protocol: ""

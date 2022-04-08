@@ -195,10 +195,41 @@ apply:
 
 ```
 
-TAG: (`git checkout consistent-k8s-deployment`) 
+(`git checkout consistent-k8s-deployment`) 
 
 PUSH Based Deployment via `make apply`
  - manually  
  - via CI/CD
 
 PULL Based Deployment of `k8s-resources` folder via in-cluster GitOperator (i.e `fluxcd` or `argocd`)
+
+## Source Function Handlers from GIT too!
+
+
+change source type: `inline` to `git`.
+
+>>NOTE: heads up! avoid double deplyments. Require folder filters in CI/CD pipelines
+
+```yaml
+    sourceType: git
+    url: https://github.com/kwiatekus/kyma-serverless-community-hour.git
+    repository: kyma-serverless-community-hour1
+    reference: main
+    baseDir: /src/sanitize-fn/
+```
+
+```yaml
+    sourceType: git
+    url: https://github.com/kwiatekus/kyma-serverless-community-hour.git
+    repository: kyma-serverless-community-hour2
+    reference: main
+    baseDir: /src/store-fn/
+```
+
+Render changes in manifests.. See difference
+`make render`
+
+Apply To the runtime
+`make apply`
+
+From now on, the referenced repository will be polled for changes and function controller will be auto-deploying content of the `baseDirs`
