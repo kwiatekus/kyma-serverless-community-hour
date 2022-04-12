@@ -45,7 +45,7 @@ spec:
     - GET
     path: /.*
   service:
-    host: data-in.c-31cabdf.kyma.ondemand.com
+    host: data-in
     name: sanitize-fn
     port: 80
 

@@ -17,7 +17,7 @@ env:
 apiRules:
     - name: data-in
       service:
-        host: data-in.c-31cabdf.kyma.ondemand.com
+        host: data-in
       rules:
         - methods:
             - GET
