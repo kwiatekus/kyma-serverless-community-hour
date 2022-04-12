@@ -11,7 +11,7 @@ module.exports = {
       secretAccessKey: readEnv("S3_SECRET"),
     });
 
-    let body = event.data;
+    let body = JSON.stringify(event.data);
 
     let params = {
       Bucket: readEnv("S3_BUCKET"),
