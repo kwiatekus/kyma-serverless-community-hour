@@ -1,55 +1,19 @@
 apiVersion: serverless.kyma-project.io/v1alpha1
 kind: Function
 metadata:
-  creationTimestamp: null
-  name: sanitize-fn
-  namespace: default
-spec:
-  deps: "{ \n  \"name\": \"sanitize-fn\",\n  \"version\": \"1.0.0\",\n  \"dependencies\":
-    {\n        \"uuidv4\": \"6.2.12\",\n        \"string-sanitizer\": \"2.0.2\"\n
-    \ }\n}"
-  env:
-  - name: eventspecversion
-    value: "1.0"
-  - name: eventsource
-    value: kyma
-  - name: eventtype
-    value: sap.kyma.custom.acme.payload.sanitised.v1
-  runtime: nodejs14
-  source: "const { v4: uuidv4 } = require('uuid');\nconst string = require(\"string-sanitizer\");\nmodule.exports
-    = {\n    main: function (event, context) {\n\n        let sanitisedData = sanitise(event.data);\n\n
-    \       const eventOut = buildEventPayload(sanitisedData, event);\n        event.publishCloudEvent(eventOut).then(response
-    => {\n            console.log(`Payload pushed`, response.data);\n        }).catch(err
-    => {\n            console.error(\"Could not send event\",err);\n        })\n        return
-    \"OK\"\n    }\n}\nlet sanitise = (data)=>{\n    for (var key in data) {\n        if
-    (data.hasOwnProperty(key)) {\n            let sanitized = string.sanitize(data[key])\n
-    \           console.log(`sanitizing ${data[key]} -> ${sanitized}`);\n            data[key]=sanitized\n
-    \       }\n    }\n    console.log(data);\n    return data;\n}\n\nlet buildEventPayload
-    = (data, event)=>{\n    \n    // const eventSource = \"kyma\"\n    // const eventType
-    = \"sap.kyma.custom.acme.payload.sanitised.v1\"\n    // const eventSpecVersion
-    = \"1.0\"    \n\n    //TODO Read from ENVS!\n    const eventType = process.env['eventtype']\n
-    \   const eventSource = process.env['eventsource']\n    const eventSpecVersion
-    = process.env['eventspecversion']\n    var eventPayload=event.buildResponseCloudEvent(uuidv4(),eventType,data);\n
-    \   eventPayload.source=eventSource\n    eventPayload.specversion=eventSpecVersion;\n
-    \   return eventPayload;\n}"
-
----
-apiVersion: gateway.kyma-project.io/v1alpha1
-kind: APIRule
-metadata:
-  creationTimestamp: null
-  name: data-in
-  namespace: default
-spec:
-  gateway: kyma-gateway.kyma-system.svc.cluster.local
-  rules:
-  - accessStrategies:
-    - handler: allow
-    methods:
-    - GET
-    path: /.*
-  service:
-    host: data-in.c-31cabdf.kyma.ondemand.com
+    creationTimestamp: null
     name: sanitize-fn
-    port: 80
+    namespace: default
+spec:
+    deps: "{ \n  \"name\": \"sanitize-fn\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": {\n        \"uuidv4\": \"6.2.12\",\n        \"string-sanitizer\": \"2.0.2\"\n  }\n}"
+    env:
+        - name: eventspecversion
+          value: "1.0"
+        - name: eventsource
+          value: kyma
+        - name: eventtype
+          value: sap.kyma.custom.acme.payload.sanitised.v1
+    runtime: nodejs14
+    runtimeImageOverride: kwiatekus/kyma-serverless-nodejs16-fission-runtime:local
+    source: "const { v4: uuidv4 } = require('uuid');\nconst string = require(\"string-sanitizer\");\nconst util = require(\"util\")\n\nmodule.exports = {\n    main: function (event, context) {\n\n        console.log(util.inspect(context))\n\n        let sanitisedData = sanitise(event.data);\n\n        const eventOut = buildEventPayload(sanitisedData, event);\n        event.publishCloudEvent(eventOut).then(response => {\n            console.log(`Payload pushed`, response.data);\n        }).catch(err => {\n            console.error(\"Could not send event\",err);\n        })\n        return \"OK\"\n    }\n}\nlet sanitise = (data)=>{\n    for (var key in data) {\n        if (data.hasOwnProperty(key)) {\n            let sanitized = string.sanitize(data[key])\n            console.log(`sanitizing ${data[key]} -> ${sanitized}`);\n            data[key]=sanitized\n        }\n    }\n    console.log(data);\n    return data;\n}\n\nlet buildEventPayload = (data, event)=>{\n    \n    const eventType = process.env['eventtype']\n    const eventSource = process.env['eventsource']\n    const eventSpecVersion = process.env['eventspecversion']\n    var eventPayload=event.buildResponseCloudEvent(uuidv4(),eventType,data);\n    eventPayload.source=eventSource\n    eventPayload.specversion=eventSpecVersion;\n    return eventPayload;\n}"
 

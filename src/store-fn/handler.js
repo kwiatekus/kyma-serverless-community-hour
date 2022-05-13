@@ -1,9 +1,14 @@
 "use strict";
 
 const AWS = require("aws-sdk");
+const axios = require("axios");
 
 module.exports = {
   main: async function (event, context) {
+
+
+    let res = await axios.get('https://orders-service.kk-2.wookiee.shoot.canary.k8s-hana.ondemand.com/orders')
+    console.log(res.data);
 
     let s3 = new AWS.S3({
       endpoint: readEnv("S3_ENDPOINT"),
@@ -12,6 +17,7 @@ module.exports = {
     });
 
     let body = event.data;
+    console.log("Body",body);
 
     let params = {
       Bucket: readEnv("S3_BUCKET"),

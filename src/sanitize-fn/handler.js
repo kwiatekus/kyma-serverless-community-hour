@@ -1,7 +1,11 @@
 const { v4: uuidv4 } = require('uuid');
 const string = require("string-sanitizer");
+const util = require("util")
+
 module.exports = {
     main: function (event, context) {
+
+        console.log(util.inspect(context))
 
         let sanitisedData = sanitise(event.data);
 
@@ -28,11 +32,6 @@ let sanitise = (data)=>{
 
 let buildEventPayload = (data, event)=>{
     
-    // const eventSource = "kyma"
-    // const eventType = "sap.kyma.custom.acme.payload.sanitised.v1"
-    // const eventSpecVersion = "1.0"    
-
-    //TODO Read from ENVS!
     const eventType = process.env['eventtype']
     const eventSource = process.env['eventsource']
     const eventSpecVersion = process.env['eventspecversion']

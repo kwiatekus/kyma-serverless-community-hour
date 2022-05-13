@@ -1,6 +1,6 @@
 
 render:
 	(cd ./src ; sh render-function-manifests.sh)
-apply:
+all:
 	(cd ./src ; sh render-function-manifests.sh)
 	kubectl apply -k ./k8s-resources/base
