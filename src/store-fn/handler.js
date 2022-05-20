@@ -1,14 +1,11 @@
 "use strict";
 
 const AWS = require("aws-sdk");
-const axios = require("axios");
 
 module.exports = {
   main: async function (event, context) {
 
-
-    let res = await axios.get('https://orders-service.kk-2.wookiee.shoot.canary.k8s-hana.ondemand.com/orders')
-    console.log(res.data);
+    throw("Jebło")
 
     let s3 = new AWS.S3({
       endpoint: readEnv("S3_ENDPOINT"),
@@ -17,15 +14,23 @@ module.exports = {
     });
 
     let body = event.data;
+
+    console.log("Headers from eventing",event.extensions.request.headers)
+
     console.log("Body",body);
+    if(typeof body == "object"){
+      body = JSON.stringify(body)
+    }
 
     let params = {
       Bucket: readEnv("S3_BUCKET"),
       Key: Date.now().toString(),
       Body: body,
     };
+
     try {
       console.log(`Storing ... `,params )
+      //return "Git"
       return await s3.upload(params).promise();
     } catch (e) {
       console.log(e);

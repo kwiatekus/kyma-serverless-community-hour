@@ -4,3 +4,5 @@ render:
 all:
 	(cd ./src ; sh render-function-manifests.sh)
 	kubectl apply -k ./k8s-resources/base
+deploy:
+	kubectl apply -k ./k8s-resources/base

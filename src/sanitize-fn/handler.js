@@ -1,21 +1,19 @@
 const { v4: uuidv4 } = require('uuid');
 const string = require("string-sanitizer");
-const util = require("util")
 
 module.exports = {
-    main: function (event, context) {
+    main: async function (event, context, callback) {
 
-        console.log(util.inspect(context))
+        const message = `Hello World from the Kyma Function ${context["function-name"]} running on ${context.runtime}!`;
+
+        console.log(message);
 
         let sanitisedData = sanitise(event.data);
 
         const eventOut = buildEventPayload(sanitisedData, event);
-        event.publishCloudEvent(eventOut).then(response => {
-            console.log(`Payload pushed`, response.data);
-        }).catch(err => {
-            console.error("Could not send event",err);
-        })
-        return "OK"
+        const response = await event.publishCloudEvent(eventOut)
+        
+        callback(response.status, response.statusText)
     }
 }
 let sanitise = (data)=>{
@@ -31,7 +29,6 @@ let sanitise = (data)=>{
 }
 
 let buildEventPayload = (data, event)=>{
-    
     const eventType = process.env['eventtype']
     const eventSource = process.env['eventsource']
     const eventSpecVersion = process.env['eventspecversion']

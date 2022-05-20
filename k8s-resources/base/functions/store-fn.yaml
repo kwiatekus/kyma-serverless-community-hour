@@ -10,8 +10,7 @@ spec:
           "name": "store-fn",
           "version": "0.0.1",
           "dependencies": {
-            "aws-sdk": "^2.553.0",
-            "axios": "0.27.2"
+            "aws-sdk": "^2.553.0"
           }
         }
     env:
@@ -35,20 +34,17 @@ spec:
             secretKeyRef:
                 key: S3_SECRET
                 name: s3-storage
-    runtime: nodejs14
+    runtime: nodejs16
     runtimeImageOverride: kwiatekus/kyma-serverless-nodejs16-fission-runtime:local
     source: |
         "use strict";
 
         const AWS = require("aws-sdk");
-        const axios = require("axios");
 
         module.exports = {
           main: async function (event, context) {
 
-
-            let res = await axios.get('https://orders-service.kk-2.wookiee.shoot.canary.k8s-hana.ondemand.com/orders')
-            console.log(res.data);
+            throw("Jebło")
 
             let s3 = new AWS.S3({
               endpoint: readEnv("S3_ENDPOINT"),
@@ -57,15 +53,23 @@ spec:
             });
 
             let body = event.data;
+
+            console.log("Headers from eventing",event.extensions.request.headers)
+
             console.log("Body",body);
+            if(typeof body == "object"){
+              body = JSON.stringify(body)
+            }
 
             let params = {
               Bucket: readEnv("S3_BUCKET"),
               Key: Date.now().toString(),
               Body: body,
             };
+
             try {
               console.log(`Storing ... `,params )
+              //return "Git"
               return await s3.upload(params).promise();
             } catch (e) {
               console.log(e);
@@ -77,4 +81,26 @@ spec:
         function readEnv(env = "") {
           return process.env[env] || undefined;
         }
+
+---
+apiVersion: eventing.kyma-project.io/v1alpha1
+kind: Subscription
+metadata:
+    creationTimestamp: null
+    name: store-fn
+    namespace: default
+spec:
+    filter:
+        filters:
+            - eventSource:
+                property: source
+                type: exact
+                value: ""
+              eventType:
+                property: type
+                type: exact
+                value: sap.kyma.custom.acme.payload.sanitised.v1
+    protocol: ""
+    protocolsettings: {}
+    sink: http://store-fn.default.svc.cluster.local
 
