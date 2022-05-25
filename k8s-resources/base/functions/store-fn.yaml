@@ -35,7 +35,6 @@ spec:
                 key: S3_SECRET
                 name: s3-storage
     runtime: nodejs16
-    runtimeImageOverride: kwiatekus/kyma-serverless-nodejs16-fission-runtime:local
     source: |
         "use strict";
 
@@ -44,7 +43,7 @@ spec:
         module.exports = {
           main: async function (event, context) {
 
-            throw("Jebło")
+            // throw("Jebło")
 
             let s3 = new AWS.S3({
               endpoint: readEnv("S3_ENDPOINT"),

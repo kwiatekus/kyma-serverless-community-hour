@@ -1,7 +1,7 @@
 name: store-fn
 namespace: default
 runtime: nodejs16
-runtimeImageOverride: kwiatekus/kyma-serverless-nodejs16-fission-runtime:local
+# runtimeImageOverride: kwiatekus/kyma-serverless-nodejs16-fission-runtime:local
 source:
     sourceType: inline
 subscriptions:

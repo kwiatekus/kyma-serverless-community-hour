@@ -1,0 +1,15 @@
+name: timeout-fn
+namespace: default
+runtime: nodejs16
+# runtimeImageOverride: kwiatekus/kyma-serverless-nodejs16-fission-runtime:local
+source:
+    sourceType: inline
+apiRules:
+    - name: timeout
+      service:
+        host: timeout
+      rules:
+        - methods:
+            - GET
+          accessStrategies:
+            - handler: allow

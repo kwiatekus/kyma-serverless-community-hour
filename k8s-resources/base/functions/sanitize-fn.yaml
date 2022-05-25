@@ -14,7 +14,6 @@ spec:
         - name: eventtype
           value: sap.kyma.custom.acme.payload.sanitised.v1
     runtime: nodejs16
-    runtimeImageOverride: kwiatekus/kyma-serverless-nodejs16-fission-runtime:local
     source: "const { v4: uuidv4 } = require('uuid');\nconst string = require(\"string-sanitizer\");\n\nmodule.exports = {\n    main: async function (event, context, callback) {\n\n        const message = `Hello World from the Kyma Function ${context[\"function-name\"]} running on ${context.runtime}!`;\n\n        console.log(message);\n\n        let sanitisedData = sanitise(event.data);\n\n        const eventOut = buildEventPayload(sanitisedData, event);\n        const response = await event.publishCloudEvent(eventOut)\n        \n        callback(response.status, response.statusText)\n    }\n}\nlet sanitise = (data)=>{\n    for (var key in data) {\n        if (data.hasOwnProperty(key)) {\n            let sanitized = string.sanitize(data[key])\n            console.log(`sanitizing ${data[key]} -> ${sanitized}`);\n            data[key]=sanitized\n        }\n    }\n    console.log(data);\n    return data;\n}\n\nlet buildEventPayload = (data, event)=>{\n    const eventType = process.env['eventtype']\n    const eventSource = process.env['eventsource']\n    const eventSpecVersion = process.env['eventspecversion']\n    var eventPayload=event.buildResponseCloudEvent(uuidv4(),eventType,data);\n    eventPayload.source=eventSource\n    eventPayload.specversion=eventSpecVersion;\n    return eventPayload;\n}"
 
 ---

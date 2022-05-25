@@ -1,0 +1,36 @@
+apiVersion: serverless.kyma-project.io/v1alpha1
+kind: Function
+metadata:
+    creationTimestamp: null
+    name: timeout-fn
+    namespace: default
+spec:
+    deps: |-
+        {
+          "name": "function-suspicious-filip6",
+          "version": "0.0.1",
+          "dependencies": {}
+        }
+    runtime: nodejs16
+    source: "module.exports = {\n    main: async function (event, context) {\n      let waitTime = 15000; //15sec \n      console.log(`Will wait ${waitTime}ms`);\n      let promise = new Promise((resolve, reject) => {\n        setTimeout(() => {\n          resolve(`Hi! Resolved after ${waitTime}!`);\n        }, waitTime)\n      })\n      \n      return await promise;\n    },\n  };\n  \n  "
+
+---
+apiVersion: gateway.kyma-project.io/v1alpha1
+kind: APIRule
+metadata:
+    creationTimestamp: null
+    name: timeout
+    namespace: default
+spec:
+    gateway: kyma-gateway.kyma-system.svc.cluster.local
+    rules:
+        - accessStrategies:
+            - handler: allow
+          methods:
+            - GET
+          path: /.*
+    service:
+        host: timeout
+        name: timeout-fn
+        port: 80
+

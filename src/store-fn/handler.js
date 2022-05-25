@@ -5,7 +5,7 @@ const AWS = require("aws-sdk");
 module.exports = {
   main: async function (event, context) {
 
-    throw("Jebło")
+    // throw("Jebło")
 
     let s3 = new AWS.S3({
       endpoint: readEnv("S3_ENDPOINT"),

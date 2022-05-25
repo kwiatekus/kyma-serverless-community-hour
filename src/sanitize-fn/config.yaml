@@ -1,7 +1,7 @@
 name: sanitize-fn
 namespace: default
 runtime: nodejs16
-runtimeImageOverride: kwiatekus/kyma-serverless-nodejs16-fission-runtime:local
+# runtimeImageOverride: kwiatekus/kyma-serverless-nodejs16-fission-runtime:local
 source:
     sourceType: inline
     sourcePath: /Users/krzysztofkwiatosz/go/src/github.com/kwiatekus/kyma-serverless-community-hour/src/sanitize-fn
