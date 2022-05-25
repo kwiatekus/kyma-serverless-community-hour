@@ -19,9 +19,6 @@ module.exports = {
       Body: body,
     };
     try {
-
-      await axios.get('https://orders-service.kk-2.wookiee.shoot.canary.k8s-hana.ondemand.com/orders')
-
       console.log(`Storing to S3... `,params )
       return await s3.upload(params).promise();
     } catch (e) {

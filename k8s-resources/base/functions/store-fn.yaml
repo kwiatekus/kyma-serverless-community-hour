@@ -2,66 +2,66 @@
 apiVersion: serverless.kyma-project.io/v1alpha1
 kind: GitRepository
 metadata:
-  creationTimestamp: null
-  name: kyma-serverless-community-hour
-  namespace: default
+    creationTimestamp: null
+    name: kyma-serverless-community-hour
+    namespace: default
 spec:
-  url: https://github.com/kwiatekus/kyma-serverless-community-hour.git
+    url: https://github.com/kwiatekus/kyma-serverless-community-hour.git
 
 ---
 apiVersion: serverless.kyma-project.io/v1alpha1
 kind: Function
 metadata:
-  creationTimestamp: null
-  name: store-fn
-  namespace: default
+    creationTimestamp: null
+    name: store-fn
+    namespace: default
 spec:
-  baseDir: /src/store-fn/
-  env:
-  - name: S3_BUCKET
-    valueFrom:
-      secretKeyRef:
-        key: S3_BUCKET
-        name: s3-storage
-  - name: S3_ENDPOINT
-    valueFrom:
-      secretKeyRef:
-        key: S3_ENDPOINT
-        name: s3-storage
-  - name: S3_ACCESSKEY_ID
-    valueFrom:
-      secretKeyRef:
-        key: S3_ACCESSKEY_ID
-        name: s3-storage
-  - name: S3_SECRET
-    valueFrom:
-      secretKeyRef:
-        key: S3_SECRET
-        name: s3-storage
-  reference: main
-  runtime: nodejs14
-  source: kyma-serverless-community-hour
-  type: git
+    baseDir: /src/store-fn/
+    env:
+        - name: S3_BUCKET
+          valueFrom:
+            secretKeyRef:
+                key: S3_BUCKET
+                name: s3-storage
+        - name: S3_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+                key: S3_ENDPOINT
+                name: s3-storage
+        - name: S3_ACCESSKEY_ID
+          valueFrom:
+            secretKeyRef:
+                key: S3_ACCESSKEY_ID
+                name: s3-storage
+        - name: S3_SECRET
+          valueFrom:
+            secretKeyRef:
+                key: S3_SECRET
+                name: s3-storage
+    reference: main
+    runtime: nodejs14
+    source: kyma-serverless-community-hour
+    type: git
 
 ---
 apiVersion: eventing.kyma-project.io/v1alpha1
 kind: Subscription
 metadata:
-  creationTimestamp: null
-  name: store-fn
-  namespace: default
+    creationTimestamp: null
+    name: store-fn
+    namespace: default
 spec:
-  filter:
-    filters:
-    - eventSource:
-        property: source
-        type: exact
-        value: ""
-      eventType:
-        property: type
-        type: exact
-        value: sap.kyma.custom.acme.payload.sanitised.v1
-  protocol: ""
-  protocolsettings: {}
-  sink: http://store-fn.default.svc.cluster.local
+    filter:
+        filters:
+            - eventSource:
+                property: source
+                type: exact
+                value: ""
+              eventType:
+                property: type
+                type: exact
+                value: sap.kyma.custom.acme.payload.sanitised.v1
+    protocol: ""
+    protocolsettings: {}
+    sink: http://store-fn.default.svc.cluster.local
 
