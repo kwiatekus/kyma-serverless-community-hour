@@ -11,7 +11,7 @@ module.exports = {
         }).catch(err => {
             console.error("Could not send event",err);
         })
-        return "OKejos Bambejos!"
+        return "OK"
     }
 }
 let sanitise = (data)=>{
